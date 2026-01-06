@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Quiz Game (1-12)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .range-info {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f0f8ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .score-item {
+            flex: 1;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2575fc;
+        }
+        
+        .question-container {
+            background-color: #f8f9ff;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .question {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .answer-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .answer-input {
+            font-size: 2rem;
+            width: 150px;
+            text-align: center;
+            padding: 15px;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+        
+        .answer-input:focus {
+            border-color: #2575fc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+        }
+        
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+        
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .btn {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #1c64e0;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-next {
+            background-color: #6a11cb;
+        }
+        
+        .btn-next:hover {
+            background-color: #5a0db0;
+        }
+        
+        .btn-reset {
+            background-color: #e74c3c;
+        }
+        
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+        
+        .feedback {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 32px;
+        }
+        
+        .correct-feedback {
+            color: #2ecc71;
+        }
+        
+        .incorrect-feedback {
+            color: #e74c3c;
+        }
+        
+        .instructions {
+            background-color: #f0f8ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .question-type {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .multiplication-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .table-item {
+            padding: 8px;
+            border-radius: 5px;
+            background-color: #f8f9ff;
+            font-weight: bold;
+        }
+        
+        .table-item.current {
+            background-color: #2575fc;
+            color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 2.5rem;
+            }
+            
+            .score-board {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .multiplication-table {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Multiplication Quiz</h1>
+        <p class="subtitle">Test your multiplication skills with missing number problems!</p>
+        <p class="range-info">Numbers range from 1 to 12 only</p>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div class="score-label">SCORE</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">QUESTIONS</div>
+                <div class="score-value" id="question-count">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">ACCURACY</div>
+                <div class="score-value" id="accuracy">0%</div>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question-type" id="question-type">Standard Multiplication</div>
+            <div class="question" id="question">4 × 2 = ?</div>
+            
+            <form class="answer-form" id="answer-form">
+                <input type="number" class="answer-input" id="answer-input" placeholder="?" min="1" max="144" required>
+                <div class="feedback" id="feedback"></div>
+                <div class="button-container">
+                    <button type="submit" class="btn" id="submit-btn">Submit Answer</button>
+                    <button type="button" class="btn btn-next hidden" id="next-btn">Next Question</button>
+                    <button type="button" class="btn btn-reset" id="reset-btn">Reset Game</button>
+                </div>
+            </form>
+            
+            <div class="multiplication-table" id="multiplication-table">
+                <!-- Multiplication table will be generated here -->
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to Play</h3>
+            <ul>
+                <li>Solve multiplication problems with a missing number</li>
+                <li>All numbers range from <strong>1 to 12 only</strong> (no zero)</li>
+                <li>Three types of questions:
+                    <ol>
+                        <li>Standard: 4 × 2 = ?</li>
+                        <li>Missing first number: ? × 4 = 12</li>
+                        <li>Missing second number: 4 × ? = 20</li>
+                    </ol>
+                </li>
+                <li>Enter your answer and click "Submit Answer"</li>
+                <li>Get 1 point for each correct answer</li>
+                <li>The table above shows which multiplication facts you're practicing</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            score: 0,
+            totalQuestions: 0,
+            correctAnswers: 0,
+            currentQuestion: null,
+            questionAnswered: false,
+            currentNumbers: { num1: 1, num2: 1 }
+        };
+        
+        // DOM Elements
+        const scoreElement = document.getElementById('score');
+        const questionCountElement = document.getElementById('question-count');
+        const accuracyElement = document.getElementById('accuracy');
+        const questionElement = document.getElementById('question');
+        const questionTypeElement = document.getElementById('question-type');
+        const answerInput = document.getElementById('answer-input');
+        const feedbackElement = document.getElementById('feedback');
+        const submitButton = document.getElementById('submit-btn');
+        const nextButton = document.getElementById('next-btn');
+        const resetButton = document.getElementById('reset-btn');
+        const answerForm = document.getElementById('answer-form');
+        const multiplicationTable = document.getElementById('multiplication-table');
+        
+        // Initialize the game
+        function initGame() {
+            gameState.score = 0;
+            gameState.totalQuestions = 0;
+            gameState.correctAnswers = 0;
+            updateScoreboard();
+            generateQuestion();
+            generateMultiplicationTable();
+            answerInput.classList.remove('correct', 'incorrect');
+            feedbackElement.textContent = '';
+            feedbackElement.className = 'feedback';
+            submitButton.classList.remove('hidden');
+            nextButton.classList.add('hidden');
+            answerInput.disabled = false;
+            answerInput.focus();
+            gameState.questionAnswered = false;
+        }
+        
+        // Update scoreboard
+        function updateScoreboard() {
+            scoreElement.textContent = gameState.score;
+            questionCountElement.textContent = gameState.totalQuestions;
+            
+            const accuracy = gameState.totalQuestions > 0 
+                ? Math.round((gameState.correctAnswers / gameState.totalQuestions) * 100) 
+                : 0;
+            accuracyElement.textContent = `${accuracy}%`;
+        }
+        
+        // Generate multiplication table visualization
+        function generateMultiplicationTable() {
+            multiplicationTable.innerHTML = '';
+            
+            // Generate a 4x3 grid showing 1-12 multiplication facts
+            for (let i = 1; i <= 12; i++) {
+                const tableItem = document.createElement('div');
+                tableItem.className = 'table-item';
+                tableItem.textContent = i;
+                tableItem.title = `Multiples of ${i}`;
+                
+                // Highlight if it's part of the current question
+                if (i === gameState.currentNumbers.num1 || i === gameState.currentNumbers.num2) {
+                    tableItem.classList.add('current');
+                }
+                
+                multiplicationTable.appendChild(tableItem);
+            }
+        }
+        
+        // Generate a random number between 1 and 12
+        function getRandomNumber() {
+            return Math.floor(Math.random() * 12) + 1;
+        }
+        
+        // Generate a random question
+        function generateQuestion() {
+            // Randomly select question type (0, 1, or 2)
+            const questionType = Math.floor(Math.random() * 3);
+            
+            let num1, num2, result, question, answer, typeText;
+            
+            switch(questionType) {
+                case 0: // Standard: num1 × num2 = ?
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber();
+                    result = num1 * num2;
+                    question = `${num1} × ${num2} = ?`;
+                    answer = result;
+                    typeText = "Standard Multiplication";
+                    break;
+                    
+                case 1: // Missing first number: ? × num2 = result
+                    num2 = getRandomNumber();
+                    num1 = getRandomNumber(); // First get a random multiplier between 1-12
+                    result = num1 * num2;
+                    
+                    // Make sure result is within 1-144
+                    while (result > 144) {
+                        num2 = getRandomNumber();
+                        num1 = getRandomNumber();
+                        result = num1 * num2;
+                    }
+                    
+                    question = `? × ${num2} = ${result}`;
+                    answer = num1;
+                    typeText = "Missing First Number";
+                    break;
+                    
+                case 2: // Missing second number: num1 × ? = result
+                    num1 = getRandomNumber();
+                    num2 = getRandomNumber(); // First get a random multiplier between 1-12
+                    result = num1 * num2;
+                    
+                    // Make sure result is within 1-144
+                    while (result > 144) {
+                        num1 = getRandomNumber();
+                        num2 = getRandomNumber();
+                        result = num1 * num2;
+                    }
+                    
+                    question = `${num1} × ? = ${result}`;
+                    answer = num2;
+                    typeText = "Missing Second Number";
+                    break;
+            }
+            
+            // Store current question data
+            gameState.currentQuestion = {
+                question: question,
+                answer: answer,
+                typeText: typeText
+            };
+            
+            // Store the current numbers for highlighting in the table
+            gameState.currentNumbers = { num1, num2 };
+            
+            // Update UI
+            questionElement.textContent = question;
+            questionTypeElement.textContent = typeText;
+            answerInput.value = '';
+            answerInput.classList.remove('correct', 'incorrect');
+            feedbackElement.textContent = '';
+            feedbackElement.className = 'feedback';
+            
+            // Update multiplication table highlighting
+            generateMultiplicationTable();
+        }
+        
+        // Check the answer
+        function checkAnswer() {
+            if (gameState.questionAnswered) return;
+            
+            const userAnswer = parseInt(answerInput.value);
+            const correctAnswer = gameState.currentQuestion.answer;
+            
+            gameState.totalQuestions++;
+            
+            if (userAnswer === correctAnswer) {
+                // Correct answer
+                gameState.score++;
+                gameState.correctAnswers++;
+                answerInput.classList.add('correct');
+                feedbackElement.textContent = `Correct! ${gameState.currentQuestion.question.replace('?', correctAnswer)}`;
+                feedbackElement.classList.add('correct-feedback');
+            } else {
+                // Incorrect answer
+                answerInput.classList.add('incorrect');
+                feedbackElement.textContent = `Incorrect. The answer is ${correctAnswer}. ${gameState.currentQuestion.question.replace('?', correctAnswer)}`;
+                feedbackElement.classList.add('incorrect-feedback');
+            }
+            
+            updateScoreboard();
+            
+            // Show next button and hide submit button
+            submitButton.classList.add('hidden');
+            nextButton.classList.remove('hidden');
+            answerInput.disabled = true;
+            gameState.questionAnswered = true;
+        }
+        
+        // Move to next question
+        function nextQuestion() {
+            generateQuestion();
+            answerInput.classList.remove('correct', 'incorrect');
+            feedbackElement.textContent = '';
+            feedbackElement.className = 'feedback';
+            submitButton.classList.remove('hidden');
+            nextButton.classList.add('hidden');
+            answerInput.disabled = false;
+            answerInput.focus();
+            gameState.questionAnswered = false;
+        }
+        
+        // Event Listeners
+        answerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            checkAnswer();
+        });
+        
+        nextButton.addEventListener('click', nextQuestion);
+        
+        resetButton.addEventListener('click', initGame);
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !gameState.questionAnswered) {
+                checkAnswer();
+            } else if (e.key === 'Enter' && gameState.questionAnswered) {
+                nextQuestion();
+            } else if (e.key === 'r' || e.key === 'R') {
+                initGame();
+            }
+        });
+        
+        // Initialize the game when page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
