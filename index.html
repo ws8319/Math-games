@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Math Challenge</title>
+    <style>
+        body { font-family: -apple-system, system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f2f2f7; touch-action: manipulation; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; width: 85%; max-width: 350px; }
+        .math { font-size: 2.5rem; font-weight: 700; margin: 20px 0; color: #1c1c1e; }
+        input { font-size: 1.5rem; width: 100px; padding: 12px; border: 2px solid #d1d1d6; border-radius: 12px; text-align: center; -webkit-appearance: none; }
+        button { background: #007aff; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; margin-top: 15px; width: 100%; }
+        #feedback { height: 24px; margin-top: 15px; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2 id="title">Multiplication</h2>
+    <div id="problem" class="math">1-12 Practice</div>
+    <input type="number" id="answer" pattern="[0-9]*" inputmode="numeric" placeholder="?">
+    <button id="action-btn" onclick="handleAction()">Start Game</button>
+    <div id="feedback"></div>
+    <p>Score: <span id="score">0</span></p>
+</div>
+
+<script>
+    let solution, score = 0, gameStarted = false;
+    const btn = document.getElementById('action-btn');
+
+    function handleAction() {
+        if (!gameStarted) {
+            gameStarted = true;
+            btn.innerText = "Submit";
+            newQuestion();
+        } else {
+            check();
+        }
+    }
+
+    function newQuestion() {
+        const n1 = Math.floor(Math.random() * 12) + 1;
+        const n2 = Math.floor(Math.random() * 12) + 1;
+        const product = n1 * n2;
+        const mode = Math.floor(Math.random() * 3);
+        
+        if (mode === 0) { solution = product; document.getElementById('problem').innerText = `${n1} × ${n2} = ?`; }
+        else if (mode === 1) { solution = n1; document.getElementById('problem').innerText = `? × ${n2} = ${product}`; }
+        else { solution = n2; document.getElementById('problem').innerText = `${n1} × ? = ${product}`; }
+
+        const inputField = document.getElementById('answer');
+        inputField.value = '';
+        inputField.focus();
+    }
+
+    function check() {
+        const val = parseInt(document.getElementById('answer').value);
+        const msg = document.getElementById('feedback');
+        if (val === solution) {
+            msg.innerText = "Correct! 🎉"; msg.style.color = "#34c759";
+            score++; document.getElementById('score').innerText = score;
+            setTimeout(newQuestion, 800);
+        } else {
+            msg.innerText = "Try again! ❌"; msg.style.color = "#ff3b30";
+        }
+    }
+</script>
+</body>
+</html>
